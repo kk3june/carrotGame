@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Element.getBoundingRect</title>
+    <style>
+        * {
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: wheat;
+        }
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: tomato;
+            border: 1px solid black;
+        }
+        .selected {
+            background-color: greenyellow;
+        }
+
+        .btns {
+            position: fixed;
+            top: 0px;
+            right: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px;
+            background-color: gray;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box selected"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+
+    <div class="btns">
+        <span class="btn scrollBy">scroll by 100px(y) </span>
+        <span class="btn scrollInto">scroll into selected box</span>
+        <span class="btn scrollTo">scroll to 100px(y)</span>
+    </div>
+
+    <script>
+        const selected = document.querySelector('.selected');
+        selected.addEventListener('click', event => {
+            const rect = selected.getBoundingClientRect();
+            console.log(rect);
+            console.log(`client: ${event.clientX}, ${event.clientY}`);
+            console.log(`page: ${event.pageX}, ${event.pageY}`);
+        });
+
+        const scrollBy = document.querySelector('.scrollBy');
+        const scrollInto = document.querySelector('.scrollInto');
+        const scrollTo = document.querySelector('.scrollTo');
+
+        scrollBy.addEventListener('click', event => {
+            window.scrollBy(0,100);
+        });
+
+        scrollInto.addEventListener('click', event => {
+            selected.scrollIntoView({behavior: "smooth"});
+        });
+
+        scrollTo.addEventListener('click', event => {
+            window.scrollTo(0, 100);
+        });
+
+    </script>
+</body>
+</html>
