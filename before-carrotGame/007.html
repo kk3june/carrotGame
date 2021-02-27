@@ -23,27 +23,21 @@
             width: 100%;
             height: 1px;
             background-color: white;
-            top: 50%;
         }
         .vertical {
             width: 1px;
             height: 100%;
             background-color: white;
-            left: 50%;
         }
 
         img {
             position: absolute;
-            top: 50%;
-            left: 50%;
             transform: translate(-60px, -60px);
         }
         .coordinates {
             font-size: 18px;
             color: white;
             position: absolute;
-            top: 50%;
-            left: 50%;
             transform: translate(20px, 20px);
         }
 
@@ -56,6 +50,7 @@
     <div class="coordinates">ddd</div>
 
     <script>
+        
         window.addEventListener('mousemove', event => {
             const x = event.clientX;
             const y = event.clientY;
@@ -64,19 +59,18 @@
             const horizon = document.querySelector('.horizontal');
             const vertical = document.querySelector('.vertical');
             const img = document.querySelector('img');
+            const imgRect = img.getBoundingClientRect();
+            const imgRectHalfWidth = imgRect.width / 2;
+            const imgRectHalfHeight = imgRect.height / 2;
 
             coordinates.innerHTML = `${x} , ${y}`
-            horizon.style.top = `${y}px`;
-            vertical.style.left = `${x}px`;
+            horizon.style.transform = `translateY(${y}px)`;
+            vertical.style.transform = `translateX(${x}px)`;
 
-            coordinates.style.top = `${y}px`;
-            coordinates.style.left = `${x}px`;
-            img.style.top = `${y}px`;
-            img.style.left = `${x}px`;
-
-
-
+            coordinates.style.transform = `translate(${x}px, ${y}px)`;
+            img.style.transform = `translate(${x - imgRectHalfWidth}px, ${y - imgRectHalfHeight}px)`;
         });
+        
     </script>
 </body>
 </html>
