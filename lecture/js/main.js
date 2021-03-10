@@ -1,6 +1,8 @@
 const field = document.querySelector('.game__field');
 const fieldRect = field.getBoundingClientRect();
 
+const CARROT_SIZE = 80;
+
 function initGame() {
     console.log(fieldRect);
     addItem('carrot', 5, '/lecture/img/carrot.png');
@@ -10,8 +12,8 @@ function initGame() {
 function addItem(className, count, imgPath) {
     const x1 = 0;
     const y1 = 0;
-    const x2 = fieldRect.width;
-    const y2 = fieldRect.height;
+    const x2 = fieldRect.width - CARROT_SIZE;
+    const y2 = fieldRect.height - CARROT_SIZE;
 
     for (let i = 0; i < count; i++) {
         const item = document.createElement('img');
@@ -23,7 +25,6 @@ function addItem(className, count, imgPath) {
         item.style.left = `${x}px`;
         item.style.right = `${y}px`;
         field.appendChild(item);
-        console.log('lecture');
     }
 }
 
