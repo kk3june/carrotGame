@@ -19,16 +19,22 @@ let started = false;
 let score = 0;
 let timer = undefined;
 
+field.addEventListener('click', onFieldClick);
+// field.addEventListener('click', (event) => onFieldClick(event));
 gameBtn.addEventListener('click', () => {
     if(started) {
         stopGame();             //started 변수가 true 이면 게임 스탑
     } else {
         startGame();            //started 변수가 false 이면 게임 시작
     }
-    started = !started;         //버튼이 클릭되고 나면 상태가 바뀌었으니 started도 반대로 할당될 수 있도록
+});
+popUpRefresh.addEventListener('click', ()=> {
+    startGame();
+    hidePopUp();
 });
 
 function startGame() {
+    started = true;
     initGame();                 //게임이 시작되었을 때 이미지들이 생성되어야 하기 때문에
     showStopButton();           //게임이 시작되면 stop 버튼이 보여야한다.
     showTimerAndScore();        //게임이 시작되면 timer와 score가 보여야 한다.
@@ -36,13 +42,24 @@ function startGame() {
 }
 
 function stopGame() {
+    started = false;
     stopGameTimer();        //타이머를 멈추기 위한 함수
     hideGameButton();      // 플레이 버튼 사라짐
     showPopUpWithText('REPLAY❓');      //팝업창 나타내기 위한 함수
 }
 
+function finishiGame(win) {
+    started = false;
+    hideGameButton();
+    showPopUpWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
+}
+
+function updateScoreBoard() {
+    gameScore.innerText = CARROT_COUNT - score;
+}
+
 function showStopButton() {
-    const  icon = gameBtn.querySelector('.fa-play');
+    const icon = gameBtn.querySelector('.fas');
     icon.classList.add('fa-stop');
     icon.classList.remove('fa-play');
 }
@@ -62,6 +79,7 @@ function startGameTimer() {
     timer = setInterval( ()=> {
         if(remainingTimeSec <=0) {
             clearInterval(timer);            //남은 시간이 없다면, 즉 0초라면 timer가 동작 되지 않아야 하기 때문에 clear
+            finishiGame(CARROT_COUNT === score);        // 남은 시간이 0일 때도 게임이 끝난 것과 동일하게 동작해야한다.
             return;
         }
         updateTimerText(--remainingTimeSec);
@@ -83,11 +101,36 @@ function showPopUpWithText(text) {
     popUp.classList.remove('pop-up--hide');
 }
 
+function hidePopUp() {
+    popUp.classList.add('pop-up--hide');
+}
+
 function initGame() {
     field.innerHTML = '';
     gameScore.innerText = CARROT_COUNT;
     addItem('carrot', 5, '/lecture/img/carrot.png');
     addItem('bug', 5, '/lecture/img/bug.png');
+}
+
+function onFieldClick(event) {
+    if(!started) {
+        return;
+        // started가 false이면, 즉 게임이 시작하지 않았으면 함수를 나갈 것이다.
+    }
+    const target = event.target;
+    if(target.matches('.carrot')) {
+        //당근!!
+        target.remove();
+        score++;
+        updateScoreBoard();
+        if(score === CARROT_COUNT) {
+            finishiGame(true);
+        }
+    } else if(target.matches('.bug')) {
+        //벌레!!
+        stopGameTimer();
+        finishiGame(false);
+    }
 }
 
 function addItem(className, count, imgPath) {
