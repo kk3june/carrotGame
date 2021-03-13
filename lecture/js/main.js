@@ -15,6 +15,12 @@ const popUp = document.querySelector('.pop-up');
 const popUpText = document.querySelector('.pop-up__message');
 const popUpRefresh = document.querySelector('.pop-up__refresh');
 
+const carrotSound = new Audio('./sound/carrot_pull.mp3');     //HTML Audio element return
+const alertSound = new Audio('./sound/alert.wav');
+const bgSound = new Audio('./sound/bg.mp3');
+const bugSound = new Audio('./sound/bug_pull.mp3');
+const winSound = new Audio('./sound/game_win.mp3');
+
 let started = false;
 let score = 0;
 let timer = undefined;
@@ -39,6 +45,7 @@ function startGame() {
     showStopButton();           //게임이 시작되면 stop 버튼이 보여야한다.
     showTimerAndScore();        //게임이 시작되면 timer와 score가 보여야 한다.
     startGameTimer();
+    playSound(bgSound);
 }
 
 function stopGame() {
@@ -46,6 +53,8 @@ function stopGame() {
     stopGameTimer();        //타이머를 멈추기 위한 함수
     hideGameButton();      // 플레이 버튼 사라짐
     showPopUpWithText('REPLAY❓');      //팝업창 나타내기 위한 함수
+    playSound(alertSound);
+    stopSound(bgSound);
 }
 
 function showStopButton() {
@@ -96,6 +105,7 @@ function hidePopUp() {
 }
 
 function initGame() {
+    score = 0;          //게임이 다시 시작될때 마다 score 초기화
     field.innerHTML = '';
     gameScore.innerText = CARROT_COUNT;
     addItem('carrot', 5, '/lecture/img/carrot.png');
@@ -112,20 +122,36 @@ function onFieldClick(event) {
         //당근!!
         target.remove();
         score++;
+        playSound(carrotSound);
         updateScoreBoard();
         if(score === CARROT_COUNT) {
             finishiGame(true);
         }
     } else if(target.matches('.bug')) {
         //벌레!!
-        stopGameTimer();
         finishiGame(false);
     }
+}
+
+function playSound(sound) {
+    sound.curretTime = 0;           //재생할 때는 항상 처음부터 재생되도록
+    sound.play();
+}
+
+function stopSound(sound) {
+    sound.pause();
 }
 
 function finishiGame(win) {
     started = false;
     hideGameButton();
+    if(win) {
+        playSound(winSound);
+    } else {
+        playSound(bugSound);
+    }
+    stopGameTimer(); 
+    stopSound(bgSound);
     showPopUpWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
 }
 
