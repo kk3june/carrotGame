@@ -48,16 +48,6 @@ function stopGame() {
     showPopUpWithText('REPLAY❓');      //팝업창 나타내기 위한 함수
 }
 
-function finishiGame(win) {
-    started = false;
-    hideGameButton();
-    showPopUpWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
-}
-
-function updateScoreBoard() {
-    gameScore.innerText = CARROT_COUNT - score;
-}
-
 function showStopButton() {
     const icon = gameBtn.querySelector('.fas');
     icon.classList.add('fa-stop');
@@ -131,6 +121,17 @@ function onFieldClick(event) {
         stopGameTimer();
         finishiGame(false);
     }
+}
+
+function finishiGame(win) {
+    started = false;
+    hideGameButton();
+    showPopUpWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
+}
+
+
+function updateScoreBoard() {
+    gameScore.innerText = CARROT_COUNT - score;
 }
 
 function addItem(className, count, imgPath) {
