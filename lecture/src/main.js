@@ -1,5 +1,7 @@
 'use strict';
 
+import PopUp from './popup.js';
+
 const CARROT_SIZE = 80;
 const CARROT_COUNT = 5;
 const BUG_COUNT = 5;
@@ -11,15 +13,16 @@ const gameBtn = document.querySelector('.game__button');
 const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
 
-const popUp = document.querySelector('.pop-up');
-const popUpText = document.querySelector('.pop-up__message');
-const popUpRefresh = document.querySelector('.pop-up__refresh');
-
 const carrotSound = new Audio('./sound/carrot_pull.mp3');     //HTML Audio element return
 const alertSound = new Audio('./sound/alert.wav');
 const bgSound = new Audio('./sound/bg.mp3');
 const bugSound = new Audio('./sound/bug_pull.mp3');
 const winSound = new Audio('./sound/game_win.mp3');
+
+const gameFinishBanner = new PopUp();
+gameFinishBanner.setClickListner(() => {
+    startGame();
+});
 
 let started = false;
 let score = 0;
@@ -33,10 +36,6 @@ gameBtn.addEventListener('click', () => {
     } else {
         startGame();            //started 변수가 false 이면 게임 시작
     }
-});
-popUpRefresh.addEventListener('click', ()=> {
-    startGame();
-    hidePopUp();
 });
 
 function startGame() {
@@ -52,7 +51,7 @@ function stopGame() {
     started = false;
     stopGameTimer();        //타이머를 멈추기 위한 함수
     hideGameButton();      // 플레이 버튼 사라짐
-    showPopUpWithText('REPLAY❓');      //팝업창 나타내기 위한 함수
+    gameFinishBanner.showWithText('REPLAY❓');      //팝업창 나타내기 위한 함수
     playSound(alertSound);
     stopSound(bgSound);
 }
@@ -96,21 +95,12 @@ function updateTimerText(time) {
     gameTimer.innerText = `${minutes}:${seconds}`;
 }
 
-function showPopUpWithText(text) {
-    popUpText.innerText = text;
-    popUp.classList.remove('pop-up--hide');
-}
-
-function hidePopUp() {
-    popUp.classList.add('pop-up--hide');
-}
-
 function initGame() {
     score = 0;          //게임이 다시 시작될때 마다 score 초기화
     field.innerHTML = '';
     gameScore.innerText = CARROT_COUNT;
-    addItem('carrot', 5, '/lecture/img/carrot.png');
-    addItem('bug', 5, '/lecture/img/bug.png');
+    addItem('carrot', CARROT_COUNT, '/lecture/img/carrot.png');
+    addItem('bug', BUG_COUNT, '/lecture/img/bug.png');
 }
 
 function onFieldClick(event) {
@@ -153,7 +143,7 @@ function finishiGame(win) {
     }
     stopGameTimer(); 
     stopSound(bgSound);
-    showPopUpWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
+    gameFinishBanner.showWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
 }
 
 
