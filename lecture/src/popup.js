@@ -15,7 +15,7 @@ export default class PopUp {              //export는 외부에서도 클래스�
         // });
         this.popUpRefresh.addEventListener('click', () => {
             this.onClick && this.onClick();
-            hide();
+            this.hide();
         });
     }
 

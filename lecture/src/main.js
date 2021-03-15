@@ -1,14 +1,12 @@
 'use strict';
 
 import PopUp from './popup.js';
+import Field from './field.js';
 
-const CARROT_SIZE = 80;
 const CARROT_COUNT = 5;
 const BUG_COUNT = 5;
 const GAME_DURATION_SEC = 5;
 
-const field = document.querySelector('.game__field');
-const fieldRect = field.getBoundingClientRect();
 const gameBtn = document.querySelector('.game__button');
 const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
@@ -24,12 +22,34 @@ gameFinishBanner.setClickListner(() => {
     startGame();
 });
 
+const gameField = new Field(CARROT_COUNT, BUG_COUNT);
+//클릭이 되면 어떤 item이 클릭이 되었는지 field 클래스에서 받아온다.
+gameField.setClickListner(onItemClick);
+// field.addEventListener('click', (event) => onFieldClick(event));
+
+//기존 onFielcClick 함수명을 field 클래스의 onItemClick로 바꿔준다.
+function onItemClick(item) {
+    if(!started) {
+        return;
+        // started가 false이면, 즉 게임이 시작하지 않았으면 함수를 나갈 것이다.
+    }
+    if( item === 'carrot') {
+        //당근!!
+        score++;
+        updateScoreBoard();
+        if(score === CARROT_COUNT) {
+            finishiGame(true);
+        }
+    } else if(item ==='bug') {
+        //벌레!!
+        finishiGame(false);
+    }
+}
+
 let started = false;
 let score = 0;
 let timer = undefined;
 
-field.addEventListener('click', onFieldClick);
-// field.addEventListener('click', (event) => onFieldClick(event));
 gameBtn.addEventListener('click', () => {
     if(started) {
         stopGame();             //started 변수가 true 이면 게임 스탑
@@ -97,31 +117,8 @@ function updateTimerText(time) {
 
 function initGame() {
     score = 0;          //게임이 다시 시작될때 마다 score 초기화
-    field.innerHTML = '';
     gameScore.innerText = CARROT_COUNT;
-    addItem('carrot', CARROT_COUNT, '/lecture/img/carrot.png');
-    addItem('bug', BUG_COUNT, '/lecture/img/bug.png');
-}
-
-function onFieldClick(event) {
-    if(!started) {
-        return;
-        // started가 false이면, 즉 게임이 시작하지 않았으면 함수를 나갈 것이다.
-    }
-    const target = event.target;
-    if(target.matches('.carrot')) {
-        //당근!!
-        target.remove();
-        score++;
-        playSound(carrotSound);
-        updateScoreBoard();
-        if(score === CARROT_COUNT) {
-            finishiGame(true);
-        }
-    } else if(target.matches('.bug')) {
-        //벌레!!
-        finishiGame(false);
-    }
+    gameField.init();
 }
 
 function playSound(sound) {
@@ -151,26 +148,4 @@ function updateScoreBoard() {
     gameScore.innerText = CARROT_COUNT - score;
 }
 
-function addItem(className, count, imgPath) {
-    const x1 = 0;
-    const y1 = 0;
-    const x2 = fieldRect.width - CARROT_SIZE;
-    const y2 = fieldRect.height - CARROT_SIZE;
-
-    for (let i = 0; i < count; i++) {
-        const item = document.createElement('img');
-        item.setAttribute('class', className);
-        item.setAttribute('src', imgPath);
-        item.style.position = 'absolute';
-        const x = randomNumber(x1, x2);
-        const y = randomNumber(y1, y2);
-        item.style.left = `${x}px`;
-        item.style.top = `${y}px`;
-        field.appendChild(item);
-    }
-}
-
-function randomNumber(min, max) {
-    return Math.random() * (max - min) + min;
-}
 
