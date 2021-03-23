@@ -8,7 +8,6 @@ export default class PopUp {              //export는 외부에서도 클래스�
         this.popUp = document.querySelector('.pop-up');
         this.popUpText = document.querySelector('.pop-up__message');
         this.popUpRefresh = document.querySelector('.pop-up__refresh');
-
         // popUpRefresh.addEventListener('click', ()=> {
         //     startGame();
         //     hidePopUp();

@@ -1,4 +1,5 @@
 'use strict';
+import * as sound from'./sound.js';
 
 // playSound와 carrotSound는 main.js와 중복되긴 하지만 일단 field.js에도 가져온다.
 const carrotSound = new Audio('./sound/carrot_pull.mp3'); 
@@ -13,6 +14,7 @@ export default class Field {
         this.field = document.querySelector('.game__field');
         this.fieldRect = this.field.getBoundingClientRect();
         // field.addEventListener('click', onFieldClick);
+        // this.onClick = this.onClick.bind(this);
         this.field.addEventListener('click', this.onClick);
     }
     
@@ -37,8 +39,8 @@ export default class Field {
     _addItem(className, count, imgPath) {
         const x1 = 0;
         const y1 = 0;
-        const x2 = this.fieldRect.width - this.carrotCount;
-        const y2 = this.fieldRect.height - this.carrotCount;
+        const x2 = this.fieldRect.width - CARROT_SIZE;
+        const y2 = this.fieldRect.height - CARROT_SIZE;
     
         for (let i = 0; i < count; i++) {
             const item = document.createElement('img');
@@ -53,7 +55,7 @@ export default class Field {
         }
     }
 
-    onClick(event) {
+    onClick = event => {
         //  *****  main.js의 onFieldClick 함수에서 가져왔다.  *****
         // 여기서 field 클래스와 관계없는 것들은 모두 지워준다.
 
@@ -75,7 +77,8 @@ export default class Field {
         if(target.matches('.carrot')) {
             //당근!!
             target.remove();
-            playSound(carrotSound);
+            // playSound(carrotSound);
+            sound.playCarrot();
             this.onItemClick && this.onItemClick('carrot');
             // 사용자가 당근이 선택되었는지 벌레가 선택되었는지 알아야 하기 때문에 type까지 전달
         } else if(target.matches('.bug')) {
@@ -87,11 +90,12 @@ export default class Field {
     }
 }
 
-// 중복되기는 하지만 일단은 main.js에서 가져온다.
-function playSound(sound) {
-    sound.curretTime = 0;           //재생할 때는 항상 처음부터 재생되도록
-    sound.play();
-}
+//  sound 클래스를 만들어서 import 했기 때문에 필요없다.
+// // 중복되기는 하지만 일단은 main.js에서 가져온다.
+// function playSound(sound) {
+//     sound.curretTime = 0;           //재생할 때는 항상 처음부터 재생되도록
+//     sound.play();
+// }
 
 // randomNumber 함수는 Field 안에 있는 데이터와 무관하게 공통적으로 쓸 수 있는 것
 // class는 템플릿 같은 것인데, 클래스에 포함되지 않는 함수는 이렇게 템플릿에 포함되지 않는 것이

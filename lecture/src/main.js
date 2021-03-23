@@ -2,6 +2,7 @@
 
 import PopUp from './popup.js';
 import Field from './field.js';
+import * as sound from'./sound.js';
 
 const CARROT_COUNT = 5;
 const BUG_COUNT = 5;
@@ -11,11 +12,9 @@ const gameBtn = document.querySelector('.game__button');
 const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
 
-const carrotSound = new Audio('./sound/carrot_pull.mp3');     //HTML Audio element return
-const alertSound = new Audio('./sound/alert.wav');
-const bgSound = new Audio('./sound/bg.mp3');
-const bugSound = new Audio('./sound/bug_pull.mp3');
-const winSound = new Audio('./sound/game_win.mp3');
+let started = false;
+let score = 0;
+let timer = undefined;
 
 const gameFinishBanner = new PopUp();
 gameFinishBanner.setClickListner(() => {
@@ -33,22 +32,18 @@ function onItemClick(item) {
         return;
         // started가 false이면, 즉 게임이 시작하지 않았으면 함수를 나갈 것이다.
     }
-    if( item === 'carrot') {
+    if(item === 'carrot') {
         //당근!!
         score++;
         updateScoreBoard();
         if(score === CARROT_COUNT) {
             finishiGame(true);
         }
-    } else if(item ==='bug') {
+    } else if(item === 'bug') {
         //벌레!!
         finishiGame(false);
     }
 }
-
-let started = false;
-let score = 0;
-let timer = undefined;
 
 gameBtn.addEventListener('click', () => {
     if(started) {
@@ -64,7 +59,8 @@ function startGame() {
     showStopButton();           //게임이 시작되면 stop 버튼이 보여야한다.
     showTimerAndScore();        //게임이 시작되면 timer와 score가 보여야 한다.
     startGameTimer();
-    playSound(bgSound);
+    // playSound(bgSound);
+    sound.playBackground();
 }
 
 function stopGame() {
@@ -72,8 +68,10 @@ function stopGame() {
     stopGameTimer();        //타이머를 멈추기 위한 함수
     hideGameButton();      // 플레이 버튼 사라짐
     gameFinishBanner.showWithText('REPLAY❓');      //팝업창 나타내기 위한 함수
-    playSound(alertSound);
-    stopSound(bgSound);
+    // playSound(alertSound);
+    // stopSound(bgSound);
+    sound.playAlert();
+    sound.stopBackground();
 }
 
 function showStopButton() {
@@ -121,25 +119,18 @@ function initGame() {
     gameField.init();
 }
 
-function playSound(sound) {
-    sound.curretTime = 0;           //재생할 때는 항상 처음부터 재생되도록
-    sound.play();
-}
-
-function stopSound(sound) {
-    sound.pause();
-}
-
 function finishiGame(win) {
     started = false;
     hideGameButton();
     if(win) {
-        playSound(winSound);
+        // playSound(winSound);
+        sound.playWin();
     } else {
-        playSound(bugSound);
+        // playSound(bugSound);
+        sound.playBug();
     }
     stopGameTimer(); 
-    stopSound(bgSound);
+    sound.stopBackground();
     gameFinishBanner.showWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
 }
 
