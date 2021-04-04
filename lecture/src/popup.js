@@ -18,8 +18,8 @@ export default class PopUp {              //export는 외부에서도 클래스�
         });
     }
 
-    setClickListner(onClick) {
-        this.onclick = onClick;         // onClick 멤버변수에 onclick 인자를 할당한다.
+    setClickListener(onClick) {
+        this.onClick = onClick;         // onClick 멤버변수에 onclick 인자를 할당한다.
     }
 
     // function showPopUpWithText(text) {

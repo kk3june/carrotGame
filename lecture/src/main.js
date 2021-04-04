@@ -12,7 +12,7 @@ game.setGameStopListener(reason => {
     console.log(reason);
     let message;
     switch (reason) {
-        case 'canceel':
+        case 'cancel':
             message = 'REPLAY❓';
             break;
         case 'win':
@@ -27,8 +27,9 @@ game.setGameStopListener(reason => {
     gameFinishBanner.showWithText(message);
 });
 
-gameFinishBanner.setClickListner(() => {
-    game.startGame();
+gameFinishBanner.setClickListener(() => {
+    game.start();
+    console.log('clicked start');
 });
 
 
