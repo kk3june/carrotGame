@@ -3,7 +3,29 @@
 import * as sound from'./sound.js';
 import Field from './field.js';
 
-export default class Game {
+export default class GameBuilder {
+    gameDuration (num){
+        this.gameDuration = num;
+        return this;
+    }
+    carrotCount (num) {
+        this.carrotCount = num;
+        return this;
+    }
+    bugCount(num) {
+        this.bugCount = num;
+        return this;
+    }
+    build() {
+        return new Game(
+            this.gameDuration,
+            this.carrotCount,
+            this.bugCount
+        );
+    }
+}
+
+class Game {
     constructor(gameDuration, carrotCount, bugCount) {
         this.gameDuration = gameDuration;
         this.carrotCount = carrotCount;
@@ -32,7 +54,6 @@ export default class Game {
         // field.addEventListener('click', (event) => onFieldClick(event));
         this.gameField = new Field(carrotCount, bugCount);
         this.gameField.setClickListner(this.onItemClick);
-
 
         this.started = false;
         this.score = 0;
