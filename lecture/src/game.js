@@ -48,7 +48,7 @@ class Game {
         this.gameBtn = document.querySelector('.game__button');
         this.gameBtn.addEventListener('click', () => {
             if(this.started) {
-                this.stop();             //started 변수가 true 이면 게임 스탑
+                this.stop(Reason.cancel);             //started 변수가 true 이면 게임 스탑
             } else {
                 this.start();            //started 변수가 false 이면 게임 시작
             }
@@ -99,19 +99,14 @@ class Game {
         sound.playBackground();
     }
 
-    stop() {
+    stop(reason) {
         this.started = false;
         this.stopGameTimer();       
         this.hideGameButton();      
         // this.gameFinishBanner.showWithText('REPLAY❓');   
-        this.onGameStop && this.onGameStop(Reason.cancel);   //사용자가 stop 버튼을 눌렀을때니까 cancle
+        this.onGameStop && this.onGameStop(reason);   //사용자가 stop 버튼을 눌렀을때니까 cancle
         sound.playAlert();
         sound.stopBackground();
-    }
-    
-    // 게임이 끝나면 main.js에 알려줄 수 있도로 하는 콜백함수를 새로 만든다.
-    setGameStopListener(onGameStop) {
-        this.onGameStop = onGameStop;
     }
 
     // function finishiGame(win) {
@@ -128,22 +123,22 @@ class Game {
     //     sound.stopBackground();
     //     gameFinishBanner.showWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
     // }
-    finish(win) {
-        this.started = false;
-        this.hideGameButton();
-        if(win) {
-            // playSound(winSound);
-            sound.playWin();
-        } else {
-            // playSound(bugSound);
-            sound.playBug();
-        }
-        this.stopGameTimer(); 
-        sound.stopBackground();
-        // gameFinishBanner.showWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
-        this.onGameStop && this.onGameStop(win? Reason.win : Reason.lose);        // win이 true면 win 아니면 lose
-    }
+
+
+    // finish(win) {
+    //     this.started = false;
+    //     this.hideGameButton();
+    //     this.stopGameTimer(); 
+    //     sound.stopBackground();
+    //     // gameFinishBanner.showWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
+    //     this.onGameStop && this.onGameStop(win? Reason.win : Reason.lose);        // win이 true면 win 아니면 lose
+    // }
     
+        
+    // 게임이 끝나면 main.js에 알려줄 수 있도로 하는 콜백함수를 새로 만든다.
+    setGameStopListener(onGameStop) {
+        this.onGameStop = onGameStop;
+    }
     
 
     //기존 onFielcClick 함수명을 field 클래스의 onItemClick로 바꿔준다.
@@ -174,10 +169,12 @@ class Game {
             this.score++;
             this.updateScoreBoard();
             if(this.score === this.carrotCount) {
-                this.finish(true);
+                // this.finish(true);
+                this.stop(Reason.win);
             }
         } else if(item === 'bug') {
-            this.finish(false);
+            // this.finish(false);
+            this.stop(Reason.lose);
         }
     }
 
@@ -203,7 +200,8 @@ class Game {
         this.timer = setInterval( ()=> {
             if(remainingTimeSec <=0) {
                 clearInterval(this.timer);            //남은 시간이 없다면, 즉 0초라면 timer가 동작 되지 않아야 하기 때문에 clear
-                this.finish(this.carrotCount === this.score);        // 남은 시간이 0일 때도 게임이 끝난 것과 동일하게 동작해야한다.
+                // this.finish(this.carrotCount === this.score);        // 남은 시간이 0일 때도 게임이 끝난 것과 동일하게 동작해야한다.
+                this.stop(this.carrotCount === this.score ? Reason.win: Reason.lose);   // 리팩토링 하는 과정에서 finish 함수를 제거하고 stop 함수로 통합하였기 때문에 
                 return;
             }
             this.updateTimerText(--remainingTimeSec);
