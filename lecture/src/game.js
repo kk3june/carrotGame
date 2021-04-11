@@ -3,7 +3,13 @@
 import * as sound from'./sound.js';
 import Field from './field.js';
 
-export default class GameBuilder {
+export const Reason = Object.freeze({
+    win: 'win',
+    lose: 'lose',
+    cancel: 'cancel',
+});
+
+export class GameBuilder {
     gameDuration (num){
         this.gameDuration = num;
         return this;
@@ -98,7 +104,7 @@ class Game {
         this.stopGameTimer();       
         this.hideGameButton();      
         // this.gameFinishBanner.showWithText('REPLAY❓');   
-        this.onGameStop && this.onGameStop('cancel');   //사용자가 stop 버튼을 눌렀을때니까 cancle
+        this.onGameStop && this.onGameStop(Reason.cancel);   //사용자가 stop 버튼을 눌렀을때니까 cancle
         sound.playAlert();
         sound.stopBackground();
     }
@@ -135,7 +141,7 @@ class Game {
         this.stopGameTimer(); 
         sound.stopBackground();
         // gameFinishBanner.showWithText(win? 'YOU WON👏' : 'YOU LOST💩' );
-        this.onGameStop && this.onGameStop(win? 'win' : 'lose');        // win이 true면 win 아니면 lose
+        this.onGameStop && this.onGameStop(win? Reason.win : Reason.lose);        // win이 true면 win 아니면 lose
     }
     
     
